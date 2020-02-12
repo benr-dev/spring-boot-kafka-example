@@ -1,36 +1,26 @@
-package com.example.springbootkafkaexample.service;
+package com.example.springbootkafkaexample.service
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
+import org.springframework.lang.Nullable
+import org.springframework.util.concurrent.ListenableFutureCallback
 
-public class SpringKafkaTopicService implements TopicService {
-    private final KafkaTemplate<String, String> template;
+class SpringKafkaTopicService(@param:Autowired val template: KafkaTemplate<String, String>) : TopicService {
+    override fun sendMessage(topicName: String, message: String) {
+        val future = template.send(topicName, message)
 
-    public SpringKafkaTopicService(@Autowired KafkaTemplate<String,String> kafkaTemplate) {
-        this.template = kafkaTemplate;
-    }
-
-    @Override
-    public void sendMessage(String topicName, String message) {
-        ListenableFuture<SendResult<String, String>> future =
-                template.send(topicName, message);
-
-        future.addCallback(new ListenableFutureCallback<>() {
-
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                System.out.println("Sent message=[" + message +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+        future.addCallback(object : ListenableFutureCallback<SendResult<String?, String?>?> {
+            override fun onSuccess(@Nullable result: SendResult<String?, String?>?) {
+                println("Sent message=[" + message +
+                        "] with offset=[" + result!!.recordMetadata.offset() + "]")
             }
 
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                        + message + "] due to : " + ex.getMessage());
+            override fun onFailure(ex: Throwable) {
+                println("Unable to send message=["
+                        + message + "] due to : " + ex.message)
             }
-        });
+        })
     }
+
 }

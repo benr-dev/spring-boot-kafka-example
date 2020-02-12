@@ -1,13 +1,12 @@
-package com.example.springbootkafkaexample;
+package com.example.springbootkafkaexample
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-public class SpringBootKafkaExampleApplication {
+class SpringBootKafkaExampleApplication {
+}
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootKafkaExampleApplication.class, args);
-	}
-
+fun main(args: Array<String>) {
+    SpringApplication.run(SpringBootKafkaExampleApplication::class.java, *args)
 }

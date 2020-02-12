@@ -1,20 +1,17 @@
-package com.example.springbootkafkaexample;
+package com.example.springbootkafkaexample
 
-import com.example.springbootkafkaexample.service.TopicService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.springbootkafkaexample.service.TopicService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
-public class MessageProducerController {
-
-    @Autowired
-    private TopicService topicService;
+class MessageProducerController(@Autowired val topicService: TopicService) {
 
     @PostMapping("/send/{topicName}")
-    public void sendMessage(@PathVariable String topicName, @RequestBody String message) {
-        topicService.sendMessage(topicName, message);
+    fun sendMessage(@PathVariable topicName: String?, @RequestBody message: String?) {
+        topicService.sendMessage(topicName!!, message!!)
     }
 }
