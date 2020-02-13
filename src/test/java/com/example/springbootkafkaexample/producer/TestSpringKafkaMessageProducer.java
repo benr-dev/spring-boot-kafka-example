@@ -1,30 +1,35 @@
-package com.example.springbootkafkaexample.service;
+package com.example.springbootkafkaexample.producer;
 
+import com.example.springbootkafkaexample.producer.SpringKafkaMessageProducer;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-public class TestSpringKafkaTopicService {
+import static org.hamcrest.MatcherAssert.*;
+
+public class TestSpringKafkaMessageProducer {
 
     private KafkaTemplate<String, String> kafkaTemplate = mock(KafkaTemplate.class);
 
-    private SpringKafkaTopicService uut = new SpringKafkaTopicService(kafkaTemplate);
-
     @Test
-    public void when_messageProvided_then_messageSent() throws Exception {
+    public void when_messageProducerSendIsCalled_then_kafkaTemplateInvokedWithTopicAndMessage() throws Exception {
         String topic = "test";
         String message = "this is a test";
         long offset = 1L;
         int partition = 1;
+
+        SpringKafkaMessageProducer uut = new SpringKafkaMessageProducer(kafkaTemplate, topic);
 
         // Setup mock response data from Kafka
         SendResult<String, Object> sendResult = mock(SendResult.class);
@@ -42,8 +47,14 @@ public class TestSpringKafkaTopicService {
             return null;
         }).when(responseFuture).addCallback(any(ListenableFutureCallback.class));
 
-        uut.sendMessage(topic, message);
+        ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+        uut.send(message);
 
         verify(kafkaTemplate, times(1)).send(topic, message);
+        verify(kafkaTemplate).send(topicCaptor.capture(), messageCaptor.capture());
+        assertThat(topicCaptor.getValue(), is(topic));
+        assertThat(messageCaptor.getValue(), is(message));
     }
 }

@@ -21,7 +21,7 @@ public class TestMessageProducerController {
     private MessageProducerController uut;
 
     @Test
-    public void when_messageProvided_then_messageSent() throws Exception {
+    public void when_controllerSendMessage_then_topicServiceInvoked() throws Exception {
         doNothing().when(topicService).sendMessage(anyString(), anyString());
         uut.sendMessage("test", "this is a test");
         verify(topicService, times(1)).sendMessage("test", "this is a test");

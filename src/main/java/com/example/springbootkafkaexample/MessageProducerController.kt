@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class MessageProducerController(@Autowired val topicService: TopicService) {
 
     @PostMapping("/send/{topicName}")
-    fun sendMessage(@PathVariable topicName: String?, @RequestBody message: String?) {
-        topicService.sendMessage(topicName!!, message!!)
+    fun sendMessage(@PathVariable topicName: String = "test", @RequestBody message: String = "No message provided") {
+        topicService.sendMessage(topicName, message)
     }
 }

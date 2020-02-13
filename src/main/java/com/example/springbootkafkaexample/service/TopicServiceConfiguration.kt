@@ -1,6 +1,6 @@
 package com.example.springbootkafkaexample.service
 
-import org.springframework.beans.factory.annotation.Autowired
+import com.example.springbootkafkaexample.producer.SpringKafkaMessageProducer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.KafkaTemplate
@@ -9,7 +9,12 @@ import org.springframework.kafka.core.KafkaTemplate
 class TopicServiceConfiguration(val kafkaTemplate: KafkaTemplate<String, String>) {
 
     @Bean
+    fun springKafkaMessageProducer(): SpringKafkaMessageProducer {
+        return SpringKafkaMessageProducer(kafkaTemplate, "test")
+    }
+
+    @Bean
     fun topicService(): TopicService {
-        return SpringKafkaTopicService(kafkaTemplate)
+        return MessageProducerTopicService(mapOf("test" to springKafkaMessageProducer()))
     }
 }

@@ -1,5 +1,5 @@
 package com.example.springbootkafkaexample.service
 
 interface TopicService {
-    fun sendMessage(topicName: String, message: String)
+    fun sendMessage(topic: String, message: String)
 }
